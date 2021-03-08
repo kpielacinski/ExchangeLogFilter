@@ -7,13 +7,13 @@ namespace ExchangeLogFilter
 {
     public class ExchangeLogFilter
     {
-        public string VendorFilePath { get; set; }
         public string ExchangeLogFilePath { get; set; }
+        public string VendorFilePath { get; set; }
         public string BlockedWordsFilePath { get; set; }
-
+        public string BlockedDomainsFilePath { get; set; }
         public List<string> VendorList { get; set; }
         public List<string> BlockedWordsList { get; set; }
-
+        public List<string> BlockedDomainsList { get; set; }
 
         public List<string> Filter(int column_index)
         {
@@ -29,8 +29,12 @@ namespace ExchangeLogFilter
 
                         string contact = values[column_index];
                         contact = contact.Replace("\"", "");
-                        
-                        if(!ContainsBlockedStrings(contact, VendorList))
+
+                        var alias = contact.Substring(0, contact.IndexOf("@"));
+                        var domain = contact.Substring(contact.IndexOf("@") + 1);
+
+                        if (!ContainsBlockedStrings(domain, VendorList) && !ContainsBlockedStrings(alias, BlockedWordsList) 
+                            && !ContainsBlockedStrings(domain, BlockedDomainsList))
                         {
                             listA.Add(contact);
                         }
@@ -87,5 +91,6 @@ namespace ExchangeLogFilter
             }
             return containsBlockedWord;
         }
+
     }
 }
