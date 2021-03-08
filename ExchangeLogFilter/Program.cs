@@ -8,17 +8,20 @@ namespace ExchangeLogFilter
     {
         static void Main(string[] args)
         {
-             ExchangeLogFilter filter = new ExchangeLogFilter();
+            ExchangeLogFilter filter = new ExchangeLogFilter();
 
-             string path = @"E:\MTSummary_Message trace report.csv";
+            filter.ExchangeLogFilePath = @"E:\Programy\ExchangeLogFilter\MTSummary_Message trace report.csv";
+            filter.VendorFilePath = @"E:\Programy\ExchangeLogFilter\Vendors.csv";
+            filter.BlockedWordsFilePath = @"E:\Programy\ExchangeLogFilter\BlockedWords.csv";
 
-             List<string> sender_names = filter.Parse(path, 1);
+            filter.VendorList = filter.loadCSV(filter.VendorFilePath, 0);
 
-             for (int i = 0; i<=10; i++)
-             {
-                 Console.WriteLine(sender_names[i]);
-             }    
-            
+            List<string> sender_names = filter.Filter(1);
+
+            for (int i = 0; i <= 10; i++)
+            {
+                Console.WriteLine(sender_names[i]);
+            }
         }
     }
 }
