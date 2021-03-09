@@ -10,7 +10,7 @@ namespace ExchangeLogFilter
         {
             ExchangeLogFilter filter = new ExchangeLogFilter();
 
-            filter.ExchangeLogFilePath = @"E:\Programy\ExchangeLogFilter\MTSummary_Message trace report.csv";
+            filter.ExchangeLogFilePath = @"E:\Programy\ExchangeLogFilter\Log.csv";
             filter.VendorFilePath = @"E:\Programy\ExchangeLogFilter\Vendors.csv";
             filter.BlockedAliasesFilePath = @"E:\Programy\ExchangeLogFilter\BlockedAliases.csv";
             filter.BlockedDomainsFilePath = @"E:\Programy\ExchangeLogFilter\BlockedDomains.csv";

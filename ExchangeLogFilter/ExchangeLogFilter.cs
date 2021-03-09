@@ -39,7 +39,8 @@ namespace ExchangeLogFilter
                             if (!ContainsBlockedStrings(domain, VendorList)
                                 && !ContainsBlockedStrings(alias, BlockedWordsList)
                                 && !ContainsBlockedStrings(domain, BlockedDomainsList)
-                                && !alias.Any(char.IsDigit))
+                                && !alias.Any(char.IsDigit)
+                                && (alias.Length > 3))
 
                             {
                                 FilteredList.Add(contact);
