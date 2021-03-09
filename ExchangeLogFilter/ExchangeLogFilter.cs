@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ExchangeLogFilter
@@ -9,7 +10,7 @@ namespace ExchangeLogFilter
     {
         public string ExchangeLogFilePath { get; set; }
         public string VendorFilePath { get; set; }
-        public string BlockedWordsFilePath { get; set; }
+        public string BlockedAliasesFilePath { get; set; }
         public string BlockedDomainsFilePath { get; set; }
         public List<string> VendorList { get; set; }
         public List<string> BlockedWordsList { get; set; }
@@ -17,7 +18,7 @@ namespace ExchangeLogFilter
 
         public List<string> Filter(int column_index)
         {
-            List<string> listA = new List<string>();
+            List<string> FilteredList = new List<string>();
             using (var reader = new StreamReader(ExchangeLogFilePath))
             {
                 while (!reader.EndOfStream)
@@ -28,15 +29,21 @@ namespace ExchangeLogFilter
                         var values = line.Split(',');
 
                         string contact = values[column_index];
-                        contact = contact.Replace("\"", "");
+                        contact = contact.ToLower().Replace("\"", "");
 
                         var alias = contact.Substring(0, contact.IndexOf("@"));
                         var domain = contact.Substring(contact.IndexOf("@") + 1);
 
-                        if (!ContainsBlockedStrings(domain, VendorList) && !ContainsBlockedStrings(alias, BlockedWordsList) 
-                            && !ContainsBlockedStrings(domain, BlockedDomainsList))
+                        if (!FilteredList.Contains(contact))
                         {
-                            listA.Add(contact);
+                            if (!ContainsBlockedStrings(domain, VendorList)
+                                && !ContainsBlockedStrings(alias, BlockedWordsList)
+                                && !ContainsBlockedStrings(domain, BlockedDomainsList)
+                                && !alias.Any(char.IsDigit))
+
+                            {
+                                FilteredList.Add(contact);
+                            }
                         }
                     }
                     catch (Exception ex)
@@ -45,7 +52,7 @@ namespace ExchangeLogFilter
                     }
                 }
             }
-            return listA;
+            return FilteredList;
         }
 
         public List<string> loadCSV(string path, int column_index)
@@ -91,6 +98,5 @@ namespace ExchangeLogFilter
             }
             return containsBlockedWord;
         }
-
     }
 }
