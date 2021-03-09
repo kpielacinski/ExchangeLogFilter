@@ -8,10 +8,14 @@ namespace ExchangeLogFilter
 {
     public class ExchangeLogFilter
     {
+
+        // dorobić robienie unikatowej listy z logu, a potem dopiero sprawdzanie - złożonośc algorytmu spadnie
         public string ExchangeLogFilePath { get; set; }
         public string VendorFilePath { get; set; }
         public string BlockedAliasesFilePath { get; set; }
         public string BlockedDomainsFilePath { get; set; }
+        public string ExportFilePath { get; set; }
+
         public List<string> VendorList { get; set; }
         public List<string> BlockedWordsList { get; set; }
         public List<string> BlockedDomainsList { get; set; }
@@ -33,6 +37,7 @@ namespace ExchangeLogFilter
 
                         var alias = contact.Substring(0, contact.IndexOf("@"));
                         var domain = contact.Substring(contact.IndexOf("@") + 1);
+                        var domainToDot = domain.Substring(0, domain.IndexOf("."));
 
                         if (!FilteredList.Contains(contact))
                         {
@@ -40,7 +45,8 @@ namespace ExchangeLogFilter
                                 && !ContainsBlockedStrings(alias, BlockedWordsList)
                                 && !ContainsBlockedStrings(domain, BlockedDomainsList)
                                 && !alias.Any(char.IsDigit)
-                                && (alias.Length > 3))
+                                && (alias.Length > 3)
+                                && (alias != domainToDot))
 
                             {
                                 FilteredList.Add(contact);
@@ -98,6 +104,19 @@ namespace ExchangeLogFilter
                 }
             }
             return containsBlockedWord;
+        }
+
+        public void ExportToCSV(List<string> list)
+        {
+            var csv = new StringBuilder();
+
+            for (int i = 0; i < list.Count(); i++)
+            {
+                var newLine = list[i];
+                csv.AppendLine(newLine);
+            }
+
+            File.WriteAllText(this.ExportFilePath, csv.ToString(), Encoding.UTF8);
         }
     }
 }
