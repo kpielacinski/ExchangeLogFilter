@@ -17,7 +17,7 @@ namespace ExchangeLogFilter
             filter.BlockedDomainsFilePath = @"E:\Programy\ExchangeLogFilter\BlockedDomains.csv";
             filter.ExportFilePath = @"E:\Programy\ExchangeLogFilter\FilteredMails.csv";
 
-            List<string> sender_names = filter.Filter(1);
+            List<string> sender_names = filter.Filter();
 
             filter.ExportToCSV(sender_names);
         }

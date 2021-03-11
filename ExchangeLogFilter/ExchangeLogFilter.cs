@@ -18,7 +18,7 @@ namespace ExchangeLogFilter
         public List<string> BlockedAliasesList { get; set; }
         public List<string> BlockedDomainsList { get; set; }
 
-        public List<string> Filter(int column_index)
+        public List<string> Filter()
         {
             List<string> FilteredList = new List<string>();
             List<string> NotFilteredList = new List<string>();
