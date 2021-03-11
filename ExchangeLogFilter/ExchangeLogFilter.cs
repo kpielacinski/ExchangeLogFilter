@@ -28,6 +28,7 @@ namespace ExchangeLogFilter
             BlockedDomainsList = loadCSV(BlockedDomainsFilePath, 0);
 
             NotFilteredList = loadCSV(ExchangeLogFilePath, 1);
+            NotFilteredList = RemoveDuplicates(NotFilteredList);
 
             foreach (string mail in NotFilteredList)
             {
@@ -60,7 +61,7 @@ namespace ExchangeLogFilter
             return FilteredList;
         }
 
-        public List<string> loadCSV(string path, int column_index)
+        private List<string> loadCSV(string path, int column_index)
         {
             List<string> listA = new List<string>();
             using (var reader = new StreamReader(path))
@@ -116,7 +117,7 @@ namespace ExchangeLogFilter
 
             File.WriteAllText(this.ExportFilePath, csv.ToString(), Encoding.UTF8);
         }
-        public List<string> RemoveDuplicates(List<string> listWithDuplicates)
+        private List<string> RemoveDuplicates(List<string> listWithDuplicates)
         {
             List<string> listWithoutDuplicates = new List<string>();
             foreach(string item in listWithDuplicates)
