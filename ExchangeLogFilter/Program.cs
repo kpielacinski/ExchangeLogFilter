@@ -10,6 +10,7 @@ namespace ExchangeLogFilter
         {
             ExchangeLogFilter filter = new ExchangeLogFilter();
 
+            //config
             filter.ExchangeLogFilePath = @"E:\Programy\ExchangeLogFilter\ExchangeLog.csv";
             filter.VendorFilePath = @"E:\Programy\ExchangeLogFilter\Vendors.csv";
             filter.BlockedAliasesFilePath = @"E:\Programy\ExchangeLogFilter\BlockedAliases.csv";
