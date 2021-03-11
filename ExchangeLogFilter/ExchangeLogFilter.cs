@@ -8,8 +8,6 @@ namespace ExchangeLogFilter
 {
     public class ExchangeLogFilter
     {
-
-        // dorobić robienie unikatowej listy z logu, a potem dopiero sprawdzanie - złożonośc algorytmu spadnie
         public string ExchangeLogFilePath { get; set; }
         public string VendorFilePath { get; set; }
         public string BlockedAliasesFilePath { get; set; }
