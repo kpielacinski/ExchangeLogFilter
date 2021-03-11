@@ -23,40 +23,40 @@ namespace ExchangeLogFilter
         public List<string> Filter(int column_index)
         {
             List<string> FilteredList = new List<string>();
-            using (var reader = new StreamReader(ExchangeLogFilePath))
+            List<string> NotFilteredList = new List<string>();
+
+            VendorList = loadCSV(VendorFilePath, 0);
+            BlockedWordsList = loadCSV(BlockedAliasesFilePath, 0);
+            BlockedDomainsList = loadCSV(BlockedDomainsFilePath, 0);
+
+            NotFilteredList = loadCSV(ExchangeLogFilePath, 1);
+
+            foreach (string mail in NotFilteredList)
             {
-                while (!reader.EndOfStream)
+                try
                 {
-                    try
+                    string contact = mail;
+                    contact = contact.ToLower().Replace("\"", "");
+
+                    var alias = contact.Substring(0, contact.IndexOf("@"));
+                    var domain = contact.Substring(contact.IndexOf("@") + 1);
+
+                    if (!FilteredList.Contains(contact))
                     {
-                        var line = reader.ReadLine();
-                        var values = line.Split(',');
-
-                        string contact = values[column_index];
-                        contact = contact.ToLower().Replace("\"", "");
-
-                        var alias = contact.Substring(0, contact.IndexOf("@"));
-                        var domain = contact.Substring(contact.IndexOf("@") + 1);
-                        var domainToDot = domain.Substring(0, domain.IndexOf("."));
-
-                        if (!FilteredList.Contains(contact))
+                        if (!ContainsBlockedStrings(domain, VendorList)
+                            && !ContainsBlockedStrings(alias, BlockedWordsList)
+                            && !ContainsBlockedStrings(domain, BlockedDomainsList)
+                            && !alias.Any(char.IsDigit)
+                            && alias.Length > 3
+                            && !domain.Contains(alias))
                         {
-                            if (!ContainsBlockedStrings(domain, VendorList)
-                                && !ContainsBlockedStrings(alias, BlockedWordsList)
-                                && !ContainsBlockedStrings(domain, BlockedDomainsList)
-                                && !alias.Any(char.IsDigit)
-                                && (alias.Length > 3)
-                                && (alias != domainToDot))
-
-                            {
-                                FilteredList.Add(contact);
-                            }
+                            FilteredList.Add(contact);
                         }
                     }
-                    catch (Exception ex)
-                    {
+                }
+                catch (Exception ex)
+                {
 
-                    }
                 }
             }
             return FilteredList;
@@ -117,6 +117,18 @@ namespace ExchangeLogFilter
             }
 
             File.WriteAllText(this.ExportFilePath, csv.ToString(), Encoding.UTF8);
+        }
+        public List<string> RemoveDuplicates(List<string> listWithDuplicates)
+        {
+            List<string> listWithoutDuplicates = new List<string>();
+            foreach(string item in listWithDuplicates)
+            {
+                if(!listWithoutDuplicates.Contains(item))
+                {
+                    listWithoutDuplicates.Add(item);
+                }
+            }
+            return listWithoutDuplicates;
         }
     }
 }
