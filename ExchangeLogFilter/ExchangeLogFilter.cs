@@ -15,7 +15,7 @@ namespace ExchangeLogFilter
         public string ExportFilePath { get; set; }
 
         public List<string> VendorList { get; set; }
-        public List<string> BlockedWordsList { get; set; }
+        public List<string> BlockedAliasesList { get; set; }
         public List<string> BlockedDomainsList { get; set; }
 
         public List<string> Filter(int column_index)
@@ -24,7 +24,7 @@ namespace ExchangeLogFilter
             List<string> NotFilteredList = new List<string>();
 
             VendorList = loadCSV(VendorFilePath, 0);
-            BlockedWordsList = loadCSV(BlockedAliasesFilePath, 0);
+            BlockedAliasesList = loadCSV(BlockedAliasesFilePath, 0);
             BlockedDomainsList = loadCSV(BlockedDomainsFilePath, 0);
 
             NotFilteredList = loadCSV(ExchangeLogFilePath, 1);
@@ -43,7 +43,7 @@ namespace ExchangeLogFilter
                     if (!FilteredList.Contains(contact))
                     {
                         if (!ContainsBlockedStrings(domain, VendorList)
-                            && !ContainsBlockedStrings(alias, BlockedWordsList)
+                            && !ContainsBlockedStrings(alias, BlockedAliasesList)
                             && !ContainsBlockedStrings(domain, BlockedDomainsList)
                             && !alias.Any(char.IsDigit)
                             && alias.Length > 3
